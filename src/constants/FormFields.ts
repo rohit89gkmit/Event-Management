@@ -1,4 +1,4 @@
-interface form{
+interface fieldType{
     fieldName: string,
     type: string,
     required: boolean,
@@ -6,7 +6,7 @@ interface form{
     name : string
 }
 
-export const formFieldArr : form[] = [
+export const formFieldArr : fieldType[] = [
     {
         fieldName: 'Title',
         type: 'text',
@@ -17,7 +17,7 @@ export const formFieldArr : form[] = [
     {
         fieldName: 'Date',
         type: 'date',
-        required: true,
+        required: false,
         errorMessage: 'Date is required',
         name: 'date'
     },
@@ -30,7 +30,7 @@ export const formFieldArr : form[] = [
     },
     {
         fieldName: 'Attendees Limit',
-        type: 'text',
+        type: 'number',
         required: true,
         errorMessage: 'Limit is required',
         name: 'limit'
