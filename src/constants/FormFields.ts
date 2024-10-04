@@ -1,12 +1,12 @@
-interface form{
+interface fieldType{
     fieldName: string,
     type: string,
     required: boolean,
-    errorMessage: string,
+    errorMessage?: string,
     name : string
 }
 
-export const formFieldArr : form[] = [
+export const formFieldArr : fieldType[] = [
     {
         fieldName: 'Title',
         type: 'text',
@@ -16,7 +16,7 @@ export const formFieldArr : form[] = [
     },
     {
         fieldName: 'Date',
-        type: 'date',
+        type: 'datetime-local',
         required: true,
         errorMessage: 'Date is required',
         name: 'date'
@@ -25,14 +25,12 @@ export const formFieldArr : form[] = [
         fieldName: 'Description',
         type: 'text',
         required: false,
-        errorMessage: '',
         name: 'description'
     },
     {
         fieldName: 'Attendees Limit',
-        type: 'text',
-        required: true,
-        errorMessage: 'Limit is required',
+        type: 'number',
+        required: false,
         name: 'limit'
     },
     {
