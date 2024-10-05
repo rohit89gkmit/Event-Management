@@ -9,7 +9,7 @@ const AttendeesList = ( ) => {
   return (
     <div className="mt-4">
       <h3 className="text-[18px]">Attendees:</h3>
-      <div className='border-2 border-gray-400 p-2 rounded-md'>
+      <div className='flex flex-col gap-[10px] mt-2'>
         {attendeesList.map(({name,email}) => (
           <AttendeeCard key={email} name={name} email={email}/>
         ))}
