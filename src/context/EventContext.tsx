@@ -1,10 +1,11 @@
 import React, { createContext, useState, ReactNode } from 'react';
 import { formDataType,attendeeType } from '../constants/declarations';
-
+import { limit } from '../constants/constant';
 
 interface EventContextType {
   eventList: formDataType[]; 
   attendeesList: attendeeType[] ;
+  disabled: boolean;
   addEvent: (event: formDataType) => void; 
   addAttendeeToList: (newAttendee: attendeeType) => void;
   removeAttendeeFromList : (attendeeEmail: string) => void
@@ -14,9 +15,10 @@ interface EventContextType {
 export const EventContext = createContext<EventContextType>({
   eventList: [],
   attendeesList: [],
+  disabled: false,
   addEvent: ()=>{},
   addAttendeeToList: ()=>{},
-  removeAttendeeFromList: ()=>{}
+  removeAttendeeFromList: ()=>{},
 });
 
 
@@ -24,6 +26,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const [eventList, setEventList] = useState<formDataType[]>([]); 
   const [attendeesList, setattendeesList] = useState<attendeeType[]>([]); 
+  const [disabled, setdisabled] = useState<boolean>(false);
 
   
   const addEvent = (event: formDataType) => {
@@ -31,12 +34,12 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     
     setEventList((prevEventList) => [...prevEventList, clonedEvent]);
     setattendeesList([])
-    console.log('list is ',eventList);
   };
 
   const addAttendeeToList = (newAttendee:attendeeType) => {
     if (newAttendee.name && newAttendee.email) {
       setattendeesList((prev)=>[...prev, newAttendee]);
+      if(attendeesList.length+1===Number(limit)) setdisabled(true);
     }
   };
 
@@ -44,12 +47,13 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     let arr = [...attendeesList];
     arr = arr.filter(({email})=>email!==attendeeEmail);
     setattendeesList(arr);
+    setdisabled(false)
   }
 
   
 
   return (
-    <EventContext.Provider value={{ eventList, attendeesList, addEvent, addAttendeeToList, removeAttendeeFromList }}>
+    <EventContext.Provider value={{ eventList, attendeesList,disabled, addEvent, addAttendeeToList, removeAttendeeFromList }}>
       {children}
     </EventContext.Provider>
   );

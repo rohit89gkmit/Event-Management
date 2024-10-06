@@ -5,11 +5,10 @@ const SearchBar = () => {
 
     const handleOnChange = (e:React.ChangeEvent<HTMLInputElement>)=>{
         setquery(e.target.value);
-        console.log(query);
     }
   return (
     <div className='w-[300px] h-[40px] rounded-md border-2 border-gray-500 px-1 '>
-        <input onChange={handleOnChange} className='w-full h-full outline-none text-[18px]' placeholder='Search by title..'/>
+        <input value={query} onChange={handleOnChange} className='w-full h-full outline-none text-[18px]' placeholder='Search by title..'/>
     </div>
   )
 }
