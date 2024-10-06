@@ -1,11 +1,18 @@
-import React, { useState } from 'react'
-
-const ToggleButton = () => {
-    const [toggle, setToggle] = useState<string>('Weekly');
+import React, { useEffect, useState } from 'react'
+interface MyComponentProps {
+  setListByWeekOrMonth: (toggle:string)=> void
+}
+const ToggleButton = ({setListByWeekOrMonth}: MyComponentProps) => {
+    const [toggle, setToggle] = useState<string>('Monthly');
 
     const handleToggle = (state:string)=> {
         if((state==='Weekly' && toggle==='Monthly') || (state==='Monthly' && toggle==='Weekly')) setToggle(state);
     }
+
+    useEffect(()=>{
+      setListByWeekOrMonth(toggle);
+      console.log('hii');
+    },[toggle])
 
   return (
     <div className='w-[200px] h-[30px] bg-white flex rounded-[15px] border-[1px] border-gray-300 text-black cursor-pointer'>

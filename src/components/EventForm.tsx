@@ -1,23 +1,26 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { formDataType,attendeeType } from '../constants/declarations'
 import { formFieldArr } from '../constants/FormFields'
 import AttendeesList from './AttendeesList';
 import { EventContext } from '../context/EventContext';
 import { v4 as uuidv4 } from 'uuid';
 import AttendeeForm from './AttendeeForm';
+import { useParams } from 'react-router-dom';
 
 const EventForm = () => {
-  const {attendeesList,addEvent,addAttendeeToList} = useContext(EventContext);
+  const {attendeesList,formData,setFormData,addEvent,addAttendeeToList} = useContext(EventContext);
 
-  const [formData, setFormData] = useState<formDataType>({
-    id: uuidv4(),
-    title: '',
-    date: new Date(),
-    description: '',
-    limit: 2,
-    location: '',
-    attendees: []
-  });
+  const list = JSON.parse(localStorage.getItem('EventList') as string);
+  const {id} = useParams();
+
+  useEffect(() => {
+    if (id && list) {
+      const dataToUpdate = list.find((event: formDataType) => event.id === id);
+      if (dataToUpdate) {
+        setFormData(dataToUpdate); // Pre-fill form with existing event data
+      }
+    }
+  }, [id, list, setFormData]);
   
   const [submit, setsubmit]  = useState<boolean>(false);
 

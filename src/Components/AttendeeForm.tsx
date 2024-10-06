@@ -3,7 +3,6 @@ import { attendeeType } from '../constants/declarations';
 import { EventContext } from '../context/EventContext';
 interface MyComponentProps {
     limit: number
-
   }
 const AttendeeForm = ({}:MyComponentProps) => {
   
@@ -11,7 +10,7 @@ const AttendeeForm = ({}:MyComponentProps) => {
 
   const [showAttendeeForm, setshowAttendeeForm] = useState<boolean>(false);
   const [newAttendee, setNewAttendee] = useState<attendeeType>({ name: '', email: '' });
-  
+  const [error,seterror] = useState({type: '', message: ''});
 
 
   const handleAttendeeChange = ((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,10 +18,20 @@ const AttendeeForm = ({}:MyComponentProps) => {
     setNewAttendee((prev) => ({ ...prev, [name]: value }));
   });
 
+  const isValidEmail = (email:string) => {
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    return emailRegex.test(email);
+  };
+
   const addAttendee = ((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    if(disabled) return
+    if(disabled) return;
+
+    if(!newAttendee.name) {seterror({type:'name', message: 'Name is required'}); return};
+    if(!newAttendee.email) {seterror({type:'email', message: 'Email is required'}); return}
+    if(!isValidEmail(newAttendee.email)){seterror({type:'email', message: 'Invalid email format'}); return}
     
+    seterror({type:'',message:''})
     const isAttendeeExists = attendeesList.some(({email}) => email === newAttendee.email )
 
     if(!isAttendeeExists) {
@@ -48,6 +57,9 @@ const AttendeeForm = ({}:MyComponentProps) => {
                   value={newAttendee.name}
                   onChange={handleAttendeeChange}
                 />
+                {
+                    error.type==='name' && (<p className='text-red-400'>{error.message}</p>)
+                }
                 <input
                   type="email"
                   name="email"
@@ -56,6 +68,9 @@ const AttendeeForm = ({}:MyComponentProps) => {
                   value={newAttendee.email}
                   onChange={handleAttendeeChange}
                 />
+                {
+                    error.type==='email' && (<p className='text-red-400'>{error.message}</p>)
+                }
                 <button disabled={disabled} onClick={addAttendee} className={`${disabled? "bg-green-300":"bg-green-500"} text-white px-4 py-2 rounded`}>
                   Add 
                 </button>

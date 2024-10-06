@@ -1,11 +1,13 @@
-import React, { createContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, ReactNode, useEffect } from 'react';
 import { formDataType,attendeeType } from '../constants/declarations';
-import { limit } from '../constants/constant';
+import { v4 as uuidv4 } from 'uuid';
 
 interface EventContextType {
   eventList: formDataType[]; 
   attendeesList: attendeeType[] ;
   disabled: boolean;
+  formData: formDataType;
+  setFormData: React.Dispatch<React.SetStateAction<formDataType>>;
   addEvent: (event: formDataType) => void; 
   addAttendeeToList: (newAttendee: attendeeType) => void;
   removeAttendeeFromList : (attendeeEmail: string) => void
@@ -13,9 +15,19 @@ interface EventContextType {
 
 
 export const EventContext = createContext<EventContextType>({
-  eventList: [],
+  eventList: JSON.parse(localStorage.getItem('EventList') as string),
   attendeesList: [],
   disabled: false,
+  formData: {
+    id: uuidv4(),
+    title: '',
+    date: new Date(),
+    description: '',
+    limit: 2,
+    location: '',
+    attendees: []
+  },
+  setFormData: ()=>{},
   addEvent: ()=>{},
   addAttendeeToList: ()=>{},
   removeAttendeeFromList: ()=>{},
@@ -24,15 +36,39 @@ export const EventContext = createContext<EventContextType>({
 
 export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
-  const [eventList, setEventList] = useState<formDataType[]>([]); 
+  const [eventList, setEventList] = useState<formDataType[]>(() => {
+    const savedEvents = localStorage.getItem('eventList');
+    return savedEvents ? JSON.parse(savedEvents) : [];
+  }); 
   const [attendeesList, setattendeesList] = useState<attendeeType[]>([]); 
   const [disabled, setdisabled] = useState<boolean>(false);
+  const [formData, setFormData] = useState<formDataType>({
+    id: uuidv4(),
+    title: '',
+    date: new Date(),
+    description: '',
+    limit: 2,
+    location: '',
+    attendees: []
+  });
 
-  
+  let limit:number = formData.limit;
+  useEffect(()=>{
+    limit = formData.limit;
+    if(disabled) setdisabled(false)
+  },[formData])
+
+
+
   const addEvent = (event: formDataType) => {
-    const clonedEvent = {...event, attendees: attendeesList}
+
+    event = {...event, attendees:attendeesList};
     
-    setEventList((prevEventList) => [...prevEventList, clonedEvent]);
+    setEventList((prevEvents) => {
+      const updatedEvents = [...prevEvents, event];
+      localStorage.setItem('EventList', JSON.stringify(updatedEvents));
+      return updatedEvents;
+    });
     setattendeesList([])
   };
 
@@ -53,7 +89,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   
 
   return (
-    <EventContext.Provider value={{ eventList, attendeesList,disabled, addEvent, addAttendeeToList, removeAttendeeFromList }}>
+    <EventContext.Provider value={{ eventList, attendeesList,disabled,formData,setFormData, addEvent, addAttendeeToList, removeAttendeeFromList }}>
       {children}
     </EventContext.Provider>
   );

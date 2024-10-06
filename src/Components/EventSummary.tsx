@@ -3,7 +3,9 @@ import { EventContext } from '../context/EventContext'; // Assuming EventContext
 import { formDataType } from '../constants/declarations'; // Assuming this includes the event data type
 
 const EventSummary = () => {
-  const { eventList, attendeesList } = useContext(EventContext);
+  const {  attendeesList } = useContext(EventContext);
+
+  const eventList = JSON.parse(localStorage.getItem('EventList') as string);
 
   const [totalUpcomingEvents, setTotalUpcomingEvents] = useState(0);
   const [totalAttendees, setTotalAttendees] = useState(0);
@@ -26,7 +28,7 @@ const EventSummary = () => {
   useEffect(() => {
     const now = new Date();
     const upcomingEvents = eventList.filter((event: formDataType) => new Date(event.date) > now);
-    const attendeesCount = upcomingEvents.reduce((acc, event) => acc + event.attendees.length, 0);
+    const attendeesCount = upcomingEvents.reduce((acc:number, event:formDataType) => acc + event.attendees.length, 0);
     const weeklyEvents = upcomingEvents.filter((event: formDataType) => isThisWeek(new Date(event.date)));
     const monthlyEvents = upcomingEvents.filter((event: formDataType) => isThisMonth(new Date(event.date)));
 
