@@ -17,10 +17,10 @@ const EventForm = () => {
     if (id && list) {
       const dataToUpdate = list.find((event: formDataType) => event.id === id);
       if (dataToUpdate) {
-        setFormData(dataToUpdate); // Pre-fill form with existing event data
+        setFormData(dataToUpdate); 
       }
     }
-  }, [id, list, setFormData]);
+  }, [id]);
   
   const [submit, setsubmit]  = useState<boolean>(false);
 

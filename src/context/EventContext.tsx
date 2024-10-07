@@ -61,16 +61,25 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
 
   const addEvent = (event: formDataType) => {
-
-    event = {...event, attendees:attendeesList};
+    
+    event = { ...event, attendees: attendeesList };
+  
     
     setEventList((prevEvents) => {
       const updatedEvents = [...prevEvents, event];
-      localStorage.setItem('EventList', JSON.stringify(updatedEvents));
       return updatedEvents;
     });
-    setattendeesList([])
+  
+    
+    setattendeesList([]);
   };
+  
+  
+  useEffect(() => {
+    if (eventList.length > 0) {
+      localStorage.setItem('EventList', JSON.stringify(eventList));
+    }
+  }, [eventList]);
 
   const addAttendeeToList = (newAttendee:attendeeType) => {
     if (newAttendee.name && newAttendee.email) {

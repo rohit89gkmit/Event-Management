@@ -5,7 +5,9 @@ import { formDataType } from '../constants/declarations'; // Assuming this inclu
 const EventSummary = () => {
   const {  attendeesList } = useContext(EventContext);
 
-  const eventList = JSON.parse(localStorage.getItem('EventList') as string);
+  let eventList = JSON.parse(localStorage.getItem('EventList') as string);
+
+  if(!eventList) eventList = []
 
   const [totalUpcomingEvents, setTotalUpcomingEvents] = useState(0);
   const [totalAttendees, setTotalAttendees] = useState(0);
